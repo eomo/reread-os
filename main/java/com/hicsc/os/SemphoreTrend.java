@@ -10,6 +10,7 @@ public class SemphoreTrend {
 
     public static void main(String[] args) {
 
+        // 定义7个信号量，用于控制6个任务相互之间的前趋关系
         Semaphore t1t2 = new Semaphore(0);
         Semaphore t1t3 = new Semaphore(0);
         Semaphore t1t4 = new Semaphore(0);
@@ -36,10 +37,11 @@ public class SemphoreTrend {
 
 
     public static class Task implements Runnable {
-
+        // 任务名称
         private int number;
-
+        // 当前任务需要执行wait操作的信号量列表
         private Semaphore[] ps;
+        // 当前任务执行完成后，需要执行signal的信号量列表
         private Semaphore[] vs;
 
 
@@ -53,9 +55,8 @@ public class SemphoreTrend {
         public void run() {
             try {
                 if (ps != null) {
-                    //
+                    // 等待
                     while (true) {
-                        // 先判断
                         for (Semaphore semaphore : ps) {
                             if (!semaphore.tryAcquire()) {
                                 TimeUnit.MICROSECONDS.sleep(100);
@@ -64,6 +65,7 @@ public class SemphoreTrend {
                         }
                         break;
                     }
+                    // 执行wait操作
                     for (Semaphore semaphore : ps) {
                         semaphore.acquire();
                     }
